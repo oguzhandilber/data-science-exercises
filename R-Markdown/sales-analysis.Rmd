@@ -1,0 +1,77 @@
+---
+title: "Assignment 2-Part1"
+author: "Oguzhan Dilber"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r include=FALSE}
+set.seed(2017556019)
+library(tidyverse)
+library(knitr)
+
+data<-read_csv("assignment2_data.csv")
+newdata<- data[sample(nrow(data),size = 100),ncol=5]
+
+```
+## 1.Calculate the mean sales’ values for each color.
+```{r echo=FALSE}
+byColor<-newdata %>%
+  group_by(Color) %>%
+  summarise(avg_sales = mean(Sales))
+kable(byColor)
+```
+
+## 2. Calculate the mean sales’ values for each region.
+```{r echo=FALSE}
+byRegion<-newdata %>%
+  group_by(Region) %>%
+  summarise(avg_sales = mean(Sales))
+kable(byRegion)
+```
+## 3.Identify the five highest sales’ value according to date, color and region separately.
+```{r echo=FALSE}
+ toDate<-newdata %>%
+  group_by(Date) %>%
+  summarise(Sales = max(Sales)) %>%
+  arrange(desc(Sales)) %>%
+  head(5)
+  kable(toDate)
+  toColor<-newdata %>%
+  group_by(Color,Sales) %>%
+  summarise(Sales = max(Sales)) %>%
+  arrange(desc(Sales)) %>%
+  head(5)
+  kable(toColor)
+  toRegion<-newdata %>%
+  group_by(Region,Sales) %>%
+  summarise(Sales = max(Sales)) %>%
+  arrange(desc(Sales)) %>%
+  head(5)
+  kable(toRegion)
+```
+## 4.Identify the month in which the mean sales’ value is the highest.
+```{r include=FALSE}
+temp <- newdata %>%
+  separate(Date,into = c("Day","Month","Year"),sep = "-" )
+
+
+df<-temp %>%
+  group_by(Month) %>%
+  summarise(Sales = mean(Sales)) %>%
+  arrange(desc(Sales)) %>%
+  head(1)
+```
+The month with the highest sales is `r df`
+
+## 5.Plot the sales according to years.
+
+```{r echo=FALSE}
+ggplot(data = temp, aes(x=Year,y=Sales)) +
+  geom_bar(stat="identity",width = 0.2,fill = "orange")
+```
+

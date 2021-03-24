@@ -1,0 +1,94 @@
+---
+title: "Assignment 3"
+author: "Oguzhan Dilber"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r include=FALSE}
+
+set.seed(2017556019)
+library(tidyverse)
+library(dplyr)
+library(knitr)
+
+```
+
+## 1. Write a function that finds a prime number(s) given a set of numbers. For example you have a vector of numbers like (89, 107, 597, 931, 1083). The function you will write should return a logical vector depending on the given number is prime or not.
+
+```{r}
+input<-c(5,17,13,32,11,3,103,7,10)
+
+is_prime <- function(n){
+  if(n == 0) {
+    FALSE
+  }
+  else if(sum(n %% (1:n) == 0) > 2){
+    FALSE
+  }
+  else{
+    TRUE
+  }
+}
+
+result <- sapply(input,is_prime)
+```
+ 
+5,17,13,32,11,3,103,7,10 is in order of ->`r result`
+
+
+## 2.Write a function that finds the letter numbers of all words in a given text and sorts the text according to those numbers from words with few letters to words with many letters. Sort the words containing the same number of letters alphabetically.
+
+```{r include=FALSE}
+mysentences<-sample(sentences,5,)
+```
+
+```{r}
+
+
+convert_func <- function(n){
+
+rmv<-str_c(n,sep = ".",collapse = " ")
+
+nodot<-str_replace_all(rmv,"\\.","")
+
+newdata <- nodot %>%
+  str_split(" ",simplify = FALSE)
+
+newdata<-sort(newdata[[1]])
+
+newvector<-c()
+
+for (i in 1:length(newdata)) {
+newvector[i]<-str_length(newdata[i])
+}
+
+mydata<- tibble(
+  word = newdata,
+  num = newvector,
+)
+
+mytable<-mydata %>% 
+  group_by(word) %>%
+  arrange(num)
+
+myvec<-c()
+
+myvec<-mytable$word
+
+lastvec<-c()
+lastvec<-myvec %>% str_c(collapse = " ")
+lastvec
+}
+
+```
+Sort the words alphabetically and numbers
+
+`r convert_func(mysentences)`
+
+
+
+

@@ -1,0 +1,71 @@
+---
+title: "Assignment 2-Part2"
+author: "Oguzhan Dilber"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r include=FALSE}
+set.seed(2017556019)
+library(tidyverse)
+library(knitr)
+words<-stringr::words
+```
+
+## 1.Take a sample of 100 words from this data, and save this sample as a new data
+  
+```{r echo=FALSE}
+newdataset <- sample(words,100)
+kable(newdataset)
+```
+
+## 2.Find words which are starting with “a” and ending with “e”.
+```{r include=FALSE}
+starta <- str_subset(newdataset,"^a")
+ende <- str_subset(starta,"e$")
+if (length(ende)==0) {
+ ende<- print("There are no match")
+}
+ende
+```
+Words are starting with “a” and ending with “e” : `r ende`
+
+## 3.Calculate the number of words which have more than 3 vowels.
+
+```{r echo=FALSE}
+sumdata<-sum( str_count(newdataset, "[aeiou]") >3)
+
+```
+Number of words which have more than 3 vowels is `r sumdata`.
+
+## 4.List the five longest word in your data
+
+```{r echo=FALSE}
+df <-str_length(newdataset)
+
+mydata<- tibble(
+   word = newdataset,
+   length = df,
+ )
+
+mylist<- mydata %>%
+   group_by(word) %>%
+   arrange(desc(length)) %>%
+   head(5)
+kable(mylist)
+```
+
+## 5.Try to find word(s) which contain any of these words: age, any, day, exp, her, pro, the.
+
+```{r echo=FALSE}
+find<-c("age","any","day","exp","her","pro")
+find_match<-str_c(find,collapse = "|")
+has_find<-str_subset(newdataset,find_match)
+matches<-str_extract(has_find,find_match)
+result<-head(has_find)
+```
+Words containing these: `r result`
